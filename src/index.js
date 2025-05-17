@@ -5,15 +5,20 @@ import { DB_NAME } from "./constants.js";
 //when we try to connect whith data base we shoul use try catch cause we have vary high chance of error
 import express from "express"
 import connectDB from "./db/index.js";
+import { app } from "./app.js";
 
 dotenv.config({
     path: './env'
 })
 
 connectDB()
-.then()
+.then(()=>{
+    app.listen(process.env.PORT || 8000,()=>{
+        console.log('server is runing at port:',process.env.PORT)
+    })
+})
 .catch((error)=>{
-    console.log('mongo db connection fail');
+    console.log('mongo db connection fail!!!!!!!',error);
 })
 
 
