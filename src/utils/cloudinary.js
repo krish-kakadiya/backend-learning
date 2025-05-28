@@ -17,7 +17,7 @@ const uploadOncloudinary = async (filepath) => {
             resource_type: 'auto', // Automatically detect the resource type
         });
         console.log('File uploaded successfully:', result);
-        return result.secure_url; // Return the secure URL of the uploaded file
+        return result; // Return the secure URL of the uploaded file
         
     } catch (error) {
         fs.unlinkSync(filepath); // Ensure the file is removed even if upload fails
@@ -27,4 +27,4 @@ const uploadOncloudinary = async (filepath) => {
 }
 
 
-export default uploadOncloudinary;
+export { uploadOncloudinary };
