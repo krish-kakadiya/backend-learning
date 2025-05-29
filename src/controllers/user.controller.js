@@ -14,7 +14,7 @@ const registerUser = asyncHandler(async (req, res)=>{
         throw new ApiError(400,"All field are required");
     }
 
-    const existedUser = User.findOne({
+    const existedUser =  await User.findOne({
         $or: [{username},{email}]
     })
     
@@ -42,7 +42,7 @@ const registerUser = asyncHandler(async (req, res)=>{
     const user = await User.create({
         fullname,
         avatar: avatar.url,
-        cover : cover?.url || "",
+        coverImage : cover?.url || "",
         email,
         password,
         username : username.toLowerCase()
