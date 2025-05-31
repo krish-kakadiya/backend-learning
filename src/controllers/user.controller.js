@@ -187,4 +187,38 @@ const refreshAccessToken = asyncHandler(async (req,res)=>{
         {accessToken,refreshToken:newrefreshToken},
     "Access token refreshed"))
 })
-export { registerUser, loginuser, logoutUser, refreshAccessToken };
+
+const changePassword = asyncHandler(async (req, res) => {
+    const { oldpassword, newpassword } = req.body;
+
+    // 1. Check required fields
+    if (!oldpassword || !newpassword) {
+        throw new ApiError(400, "All fields are required");
+    }
+
+    // 2. Fetch the user
+    const user = await User.findById(req.user._id);
+    if (!user) {
+        throw new ApiError(404, "User does not exist");
+    }
+
+    // 3. Compare old password
+    const isPasswordCorrect = await user.isPasswordCorrect(oldpassword);
+    if (!isPasswordCorrect) {
+        throw new ApiError(401, "Old password is incorrect");
+    }
+
+    // 4. Set new password (hashing is usually handled in pre-save hook)
+    user.password = newpassword;
+
+    // 5. Save user (validateBeforeSave false is fine if hooks are working)
+    await user.save({ validateBeforeSave: false });
+
+    // 6. Return response
+    return res.status(200).json(
+        new ApiResponce(200, null, "Password changed successfully")
+    );
+});
+
+
+export { registerUser, loginuser, logoutUser, refreshAccessToken, changePassword };
